@@ -37,7 +37,7 @@ export function Nav() {
 
   return (
     <nav className="sticky top-0 z-30 border-b border-ink-600/70 bg-ink-950/85 backdrop-blur-md">
-      <div className="mx-auto max-w-[1400px] flex items-center justify-between px-4 sm:px-6 py-3 gap-6">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 gap-6 w-full">
         <a href="#hero" className="flex items-center gap-3 min-w-0 group">
           <Image
             src="/logo.png"
