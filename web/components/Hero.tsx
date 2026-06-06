@@ -31,7 +31,7 @@ export function Hero() {
 
   return (
     <section id="hero" className="relative pt-14 pb-20 sm:pt-24 sm:pb-32 overflow-hidden">
-      <div className="w-full px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-4">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-12 gap-4">
         {/* Left: thesis */}
         <div className="col-span-12 lg:col-span-7 flex flex-col gap-8">
           <div className="flex items-center gap-3 text-mute-300">

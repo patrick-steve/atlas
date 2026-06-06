@@ -4,7 +4,7 @@ import { REPO_URL } from "@/lib/links";
 export function CloneCTA() {
   return (
     <section className="py-16 sm:py-20 border-t border-ink-600/40">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 lg:col-span-7">
             <Panel channel="CH 00" title="CLONE & RUN // YOUR MACHINE, FIVE MINUTES" status="live">
