@@ -35,7 +35,7 @@ const SPAWN_INTERVAL_MS = 320;
 export function Architecture() {
   return (
     <section id="architecture" className="py-20 sm:py-28 border-t border-ink-600/40">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="02"
           kicker="PIPELINE :: PRODUCER → KAFKA → WORKER_THREADS → RESULTS"

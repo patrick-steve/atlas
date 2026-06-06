@@ -6,7 +6,7 @@ export function Methodology() {
   const machine = (benchmarks as { machine?: { cpus?: { model?: string }[]; collectedAt?: string; platform?: string; nodeVersion?: string } }).machine;
   return (
     <section id="methodology" className="py-20 sm:py-28 border-t border-ink-600/40">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="06"
           kicker="METHODOLOGY :: HARDWARE / WORKLOAD / PROJECTION"

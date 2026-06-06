@@ -39,7 +39,7 @@ export function ZKExplainer() {
 
   return (
     <section id="explainer" className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="01"
           kicker="CIRCUIT :: BALANCE_PROOF.CIRCOM // GROTH16"

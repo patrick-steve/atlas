@@ -3,7 +3,7 @@ import { REPO_URL } from "@/lib/links";
 export function Footer() {
   return (
     <footer className="border-t border-ink-600/60 py-10 mt-10">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono">
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono">
         <div className="flex items-center gap-3 text-mute-300">
           <span className="h-2 w-2 bg-signal animate-pulse-signal" aria-hidden />
           <span className="tracking-widest">ATLAS // DISTRIBUTED ZK PROVING // REV/0.1</span>

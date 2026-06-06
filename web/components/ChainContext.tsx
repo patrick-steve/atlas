@@ -4,7 +4,7 @@ import { SectionHeader } from "./ui/SectionHeader";
 export function ChainContext() {
   return (
     <section id="chain" className="py-20 sm:py-28 border-t border-ink-600/40">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="05"
           kicker="CHAIN :: COMMITMENTS / VERIFIER / ROLLUPS"

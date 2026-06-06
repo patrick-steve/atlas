@@ -78,7 +78,7 @@ export function Benchmarks() {
 
   return (
     <section id="benchmarks" className="py-20 sm:py-28 border-t border-ink-600/40">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="04"
           kicker={`BENCHMARKS :: ${benchmarks.mode.toUpperCase()} // N=${(runs[0]?.n ?? 200)} JOBS PER WORKER COUNT`}
