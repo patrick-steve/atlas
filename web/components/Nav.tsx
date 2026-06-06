@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import clsx from "clsx";
 import { REPO_URL } from "@/lib/links";
 
@@ -37,13 +38,20 @@ export function Nav() {
   return (
     <nav className="sticky top-0 z-30 border-b border-ink-600/70 bg-ink-950/85 backdrop-blur-md">
       <div className="mx-auto max-w-[1400px] flex items-center justify-between px-4 sm:px-6 py-3 gap-6">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-2 w-2 bg-signal animate-pulse-signal" aria-hidden />
+        <a href="#hero" className="flex items-center gap-3 min-w-0 group">
+          <Image
+            src="/logo.png"
+            alt="Atlas logo"
+            width={28}
+            height={28}
+            className="opacity-90 group-hover:opacity-100 transition-opacity"
+            priority
+          />
           <span className="font-mono text-sm tracking-widest text-mute-50">
             ATLAS<span className="text-mute-300/70 ml-2">::</span>
-            <span className="text-mute-200 ml-2">DISTRIBUTED ZK PROVING</span>
+            <span className="text-mute-200 ml-2 hidden sm:inline">DISTRIBUTED ZK PROVING</span>
           </span>
-        </div>
+        </a>
         <ul className="hidden md:flex items-center gap-1 text-[10px] font-mono tracking-widest">
           {SECTIONS.map((s) => (
             <li key={s.id}>

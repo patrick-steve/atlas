@@ -1,0 +1,13 @@
+{
+  "name": "Atlas — Distributed ZK Proving",
+  "short_name": "Atlas",
+  "description": "A research pipeline that parallelizes Groth16 proof generation across a Kafka-coordinated worker pool.",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "theme_color": "#05070A",
+  "background_color": "#05070A",
+  "display": "standalone",
+  "start_url": "/"
+}
