@@ -1,0 +1,110 @@
+{
+  "machine": {
+    "platform": "win32",
+    "arch": "x64",
+    "nodeVersion": "v24.14.1",
+    "cpus": [
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      }
+    ],
+    "collectedAt": "2026-06-05T22:06:49.830Z"
+  },
+  "circuit": {
+    "name": "balance_proof",
+    "N": 64,
+    "constraints": 432
+  },
+  "workload": {
+    "count": 30,
+    "batch": 1
+  },
+  "durations": [
+    142.15470000000005,
+    143.6318000000001,
+    154.45559999999932,
+    191.8831999999993,
+    199.88360000000011,
+    192.1862000000001,
+    191.2595999999994,
+    192.6881999999996,
+    183.64410000000044,
+    196.27729999999974,
+    200.22469999999976,
+    170.3179,
+    180.0563000000002,
+    197.95679999999993,
+    172.58210000000145,
+    168.262999999999,
+    173.97569999999905,
+    184.71270000000004,
+    178.1854999999996,
+    188.0041999999994,
+    187.3125,
+    186.28950000000077,
+    180.13949999999932,
+    179.04969999999958,
+    189.28800000000047,
+    174.69220000000132,
+    191.34120000000075,
+    197.2484999999997,
+    180.2391000000007,
+    191.45180000000073
+  ],
+  "summary": {
+    "n": 30,
+    "meanMs": 181.97984,
+    "p50Ms": 186.28950000000077,
+    "p90Ms": 197.95679999999993,
+    "p99Ms": 200.22469999999976,
+    "minMs": 142.15470000000005,
+    "maxMs": 200.22469999999976,
+    "wallClockMs": 5512.619900000001,
+    "throughputProofsPerSec": 5.442058502890793
+  }
+}

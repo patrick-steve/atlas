@@ -1,0 +1,1001 @@
+{
+  "mode": "synthesized",
+  "note": "per-proof latency MEASURED on this machine; multi-worker numbers PROJECTED from a documented model. See METHODOLOGY.md.",
+  "generatedAt": "2026-06-05T22:13:49.623Z",
+  "machine": {
+    "platform": "win32",
+    "arch": "x64",
+    "nodeVersion": "v24.14.1",
+    "cpus": [
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      },
+      {
+        "model": "11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz",
+        "speedMHz": 2611
+      }
+    ],
+    "collectedAt": "2026-06-05T22:06:49.830Z"
+  },
+  "circuit": {
+    "name": "balance_proof",
+    "N": 64,
+    "constraints": 432,
+    "scheme": "groth16",
+    "curve": "bn128"
+  },
+  "workload": {
+    "jobs": 200,
+    "batch": 1,
+    "complexity": "low"
+  },
+  "model": {
+    "coordinationOverhead": 0.02,
+    "etaFormula": "eta(N) = 1 - alpha*(N-1)",
+    "throughputFormula": "T(N) = N * T(1) * eta(N)"
+  },
+  "runs": [
+    {
+      "workers": 1,
+      "n": 200,
+      "throughputProofsPerSec": 5.442058502890793,
+      "provingMs": {
+        "p50": 186.28950000000077,
+        "p90": 197.95679999999993,
+        "p99": 200.22469999999976,
+        "mean": 181.97984,
+        "n": 30
+      },
+      "endToEndMs": {
+        "p50": 18398.2087,
+        "p90": 32898.5259,
+        "p99": 36210.19382,
+        "mean": 18288.787651999995,
+        "n": 200
+      },
+      "queueWaitMs": {
+        "p50": 18197.984,
+        "p90": 32756.371199999998,
+        "p99": 36032.00832,
+        "mean": 18106.994080000004,
+        "n": 200
+      },
+      "efficiency": 1,
+      "speedup": 1,
+      "errors": 0
+    },
+    {
+      "workers": 2,
+      "n": 200,
+      "throughputProofsPerSec": 10.666434665665955,
+      "provingMs": {
+        "p50": 186.28950000000077,
+        "p90": 197.95679999999993,
+        "p99": 200.22469999999976,
+        "mean": 181.97984,
+        "n": 30
+      },
+      "endToEndMs": {
+        "p50": 9269.3099,
+        "p90": 16520.3403,
+        "p99": 18194.18966,
+        "mean": 9189.795652,
+        "n": 200
+      },
+      "queueWaitMs": {
+        "p50": 9098.992,
+        "p90": 16378.185599999999,
+        "p99": 18016.00416,
+        "mean": 9008.002080000004,
+        "n": 200
+      },
+      "efficiency": 0.98,
+      "speedup": 1.96,
+      "errors": 0
+    },
+    {
+      "workers": 4,
+      "n": 200,
+      "throughputProofsPerSec": 20.46213997086938,
+      "provingMs": {
+        "p50": 186.28950000000077,
+        "p90": 197.95679999999993,
+        "p99": 200.22469999999976,
+        "mean": 181.97984,
+        "n": 30
+      },
+      "endToEndMs": {
+        "p50": 4719.8139,
+        "p90": 8331.2475,
+        "p99": 9101.72486,
+        "mean": 4640.299652000001,
+        "n": 200
+      },
+      "queueWaitMs": {
+        "p50": 4549.496,
+        "p90": 8189.092799999999,
+        "p99": 8917.01216,
+        "mean": 4458.506080000003,
+        "n": 200
+      },
+      "efficiency": 0.94,
+      "speedup": 3.76,
+      "errors": 0
+    },
+    {
+      "workers": 8,
+      "n": 200,
+      "throughputProofsPerSec": 37.441362499888655,
+      "provingMs": {
+        "p50": 186.28950000000077,
+        "p90": 197.95679999999993,
+        "p99": 200.22469999999976,
+        "mean": 181.97984,
+        "n": 30
+      },
+      "endToEndMs": {
+        "p50": 2376.4462799999997,
+        "p90": 4194.89768,
+        "p99": 4555.5203599999995,
+        "mean": 2365.551651999999,
+        "n": 200
+      },
+      "queueWaitMs": {
+        "p50": 2183.75808,
+        "p90": 4003.5564799999997,
+        "p99": 4367.51616,
+        "mean": 2183.7580800000023,
+        "n": 200
+      },
+      "efficiency": 0.86,
+      "speedup": 6.88,
+      "errors": 0
+    }
+  ],
+  "observer": {
+    "1": [
+      {
+        "tSec": 0,
+        "lag": 0,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 0.25,
+        "lag": 63,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 0.5,
+        "lag": 125,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 0.75,
+        "lag": 188,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 0.8,
+        "lag": 197,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 1.3,
+        "lag": 195,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 1.8,
+        "lag": 192,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 2.3,
+        "lag": 189,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 2.8,
+        "lag": 186,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 3.3,
+        "lag": 184,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 3.8,
+        "lag": 181,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 4.3,
+        "lag": 178,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 4.8,
+        "lag": 176,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 5.3,
+        "lag": 173,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 5.8,
+        "lag": 170,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 6.3,
+        "lag": 167,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 6.8,
+        "lag": 165,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 7.3,
+        "lag": 162,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 7.8,
+        "lag": 159,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 8.3,
+        "lag": 156,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 8.8,
+        "lag": 154,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 9.3,
+        "lag": 151,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 9.8,
+        "lag": 148,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 10.3,
+        "lag": 146,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 10.8,
+        "lag": 143,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 11.3,
+        "lag": 140,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 11.8,
+        "lag": 137,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 12.3,
+        "lag": 135,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 12.8,
+        "lag": 132,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 13.3,
+        "lag": 129,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 13.8,
+        "lag": 127,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 14.3,
+        "lag": 124,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 14.8,
+        "lag": 121,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 15.3,
+        "lag": 118,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 15.8,
+        "lag": 116,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 16.3,
+        "lag": 113,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 16.8,
+        "lag": 110,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 17.3,
+        "lag": 107,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 17.8,
+        "lag": 105,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 18.3,
+        "lag": 102,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 18.8,
+        "lag": 99,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 19.3,
+        "lag": 97,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 19.8,
+        "lag": 94,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 20.3,
+        "lag": 91,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 20.8,
+        "lag": 88,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 21.3,
+        "lag": 86,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 21.8,
+        "lag": 83,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 22.3,
+        "lag": 80,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 22.8,
+        "lag": 78,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 23.3,
+        "lag": 75,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 23.8,
+        "lag": 72,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 24.3,
+        "lag": 69,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 24.8,
+        "lag": 67,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 25.3,
+        "lag": 64,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 25.8,
+        "lag": 61,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 26.3,
+        "lag": 59,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 26.8,
+        "lag": 56,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 27.3,
+        "lag": 53,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 27.8,
+        "lag": 50,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 28.3,
+        "lag": 48,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 28.8,
+        "lag": 45,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 29.3,
+        "lag": 42,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 29.8,
+        "lag": 39,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 30.3,
+        "lag": 37,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 30.8,
+        "lag": 34,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 31.3,
+        "lag": 31,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 31.8,
+        "lag": 29,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 32.3,
+        "lag": 26,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 32.8,
+        "lag": 23,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 33.3,
+        "lag": 20,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 33.8,
+        "lag": 18,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 34.3,
+        "lag": 15,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 34.8,
+        "lag": 12,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 35.3,
+        "lag": 10,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 35.8,
+        "lag": 7,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 36.3,
+        "lag": 4,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 36.8,
+        "lag": 1,
+        "activeWorkers": 1
+      },
+      {
+        "tSec": 37.3,
+        "lag": 0,
+        "activeWorkers": 1
+      }
+    ],
+    "2": [
+      {
+        "tSec": 0,
+        "lag": 0,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 0.25,
+        "lag": 63,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 0.5,
+        "lag": 125,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 0.75,
+        "lag": 188,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 0.8,
+        "lag": 195,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 1.3,
+        "lag": 189,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 1.8,
+        "lag": 184,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 2.3,
+        "lag": 179,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 2.8,
+        "lag": 173,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 3.3,
+        "lag": 168,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 3.8,
+        "lag": 163,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 4.3,
+        "lag": 157,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 4.8,
+        "lag": 152,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 5.3,
+        "lag": 147,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 5.8,
+        "lag": 141,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 6.3,
+        "lag": 136,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 6.8,
+        "lag": 131,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 7.3,
+        "lag": 125,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 7.8,
+        "lag": 120,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 8.3,
+        "lag": 115,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 8.8,
+        "lag": 109,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 9.3,
+        "lag": 104,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 9.8,
+        "lag": 99,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 10.3,
+        "lag": 93,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 10.8,
+        "lag": 88,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 11.3,
+        "lag": 83,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 11.8,
+        "lag": 77,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 12.3,
+        "lag": 72,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 12.8,
+        "lag": 67,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 13.3,
+        "lag": 61,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 13.8,
+        "lag": 56,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 14.3,
+        "lag": 51,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 14.8,
+        "lag": 45,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 15.3,
+        "lag": 40,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 15.8,
+        "lag": 35,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 16.3,
+        "lag": 29,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 16.8,
+        "lag": 24,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 17.3,
+        "lag": 19,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 17.8,
+        "lag": 13,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 18.3,
+        "lag": 8,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 18.8,
+        "lag": 3,
+        "activeWorkers": 2
+      },
+      {
+        "tSec": 19.3,
+        "lag": 0,
+        "activeWorkers": 2
+      }
+    ],
+    "4": [
+      {
+        "tSec": 0,
+        "lag": 0,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 0.25,
+        "lag": 63,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 0.5,
+        "lag": 125,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 0.75,
+        "lag": 188,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 0.8,
+        "lag": 190,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 1.3,
+        "lag": 180,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 1.8,
+        "lag": 169,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 2.3,
+        "lag": 159,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 2.8,
+        "lag": 149,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 3.3,
+        "lag": 139,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 3.8,
+        "lag": 128,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 4.3,
+        "lag": 118,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 4.8,
+        "lag": 108,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 5.3,
+        "lag": 98,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 5.8,
+        "lag": 87,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 6.3,
+        "lag": 77,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 6.8,
+        "lag": 67,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 7.3,
+        "lag": 57,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 7.8,
+        "lag": 47,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 8.3,
+        "lag": 36,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 8.8,
+        "lag": 26,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 9.3,
+        "lag": 16,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 9.8,
+        "lag": 6,
+        "activeWorkers": 4
+      },
+      {
+        "tSec": 10.3,
+        "lag": 0,
+        "activeWorkers": 4
+      }
+    ],
+    "8": [
+      {
+        "tSec": 0,
+        "lag": 0,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 0.25,
+        "lag": 63,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 0.5,
+        "lag": 125,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 0.75,
+        "lag": 188,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 0.8,
+        "lag": 181,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 1.3,
+        "lag": 163,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 1.8,
+        "lag": 144,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 2.3,
+        "lag": 125,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 2.8,
+        "lag": 106,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 3.3,
+        "lag": 88,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 3.8,
+        "lag": 69,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 4.3,
+        "lag": 50,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 4.8,
+        "lag": 32,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 5.3,
+        "lag": 13,
+        "activeWorkers": 8
+      },
+      {
+        "tSec": 5.8,
+        "lag": 0,
+        "activeWorkers": 8
+      }
+    ]
+  }
+}

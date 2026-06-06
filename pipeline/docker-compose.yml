@@ -1,0 +1,64 @@
+# Atlas distributed ZK proving pipeline.
+#
+# Bring up the broker and any number of workers:
+#   docker compose up --build --scale worker=4
+#
+# Producer is a CLI you run from your shell (not a long-lived service), e.g.
+#   docker compose run --rm producer node index.js --count 200 --complexity low
+#
+# Gateway and observer are long-lived and exposed on host ports.
+
+services:
+  kafka:
+    image: bitnami/kafka:3.7
+    container_name: atlas-kafka
+    ports:
+      - "9092:9092"   # PLAINTEXT for host (gateway/producer/observer running on host)
+      - "9094:9094"   # for the in-network listener
+    environment:
+      # KRaft mode — no Zookeeper.
+      KAFKA_CFG_NODE_ID: "1"
+      KAFKA_CFG_PROCESS_ROLES: "controller,broker"
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,INTERNAL://:9094"
+      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092,INTERNAL://kafka:9094"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT"
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/bitnami/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # One-shot init: create the two topics with the right partition counts.
+  topics-init:
+    image: bitnami/kafka:3.7
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-lc"]
+    command: |
+      "
+      set -e
+      KAFKA=/opt/bitnami/kafka/bin
+      $KAFKA/kafka-topics.sh --bootstrap-server kafka:9094 --create --if-not-exists --topic proof-jobs    --partitions 8 --replication-factor 1
+      $KAFKA/kafka-topics.sh --bootstrap-server kafka:9094 --create --if-not-exists --topic proof-results --partitions 4 --replication-factor 1
+      echo 'topics ready:'
+      $KAFKA/kafka-topics.sh --bootstrap-server kafka:9094 --list
+      "
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    depends_on:
+      topics-init:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BROKERS: "kafka:9094"
+      WORKER_GROUP: "proof-workers"
+    # WORKER_ID is set per-replica via the worker entrypoint (uses HOSTNAME).
+    restart: on-failure

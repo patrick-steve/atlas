@@ -1,0 +1,33 @@
+node_modules/
+.env
+.env.local
+.env*.local
+.next/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Large/derived ZK artefacts. Re-derived via `npm run setup:balance`.
+pipeline/circuits/build/*.ptau
+pipeline/circuits/build/*.zkey
+pipeline/circuits/build/*_0000.zkey
+pipeline/circuits/build/*.r1cs
+pipeline/circuits/build/*.sym
+pipeline/circuits/build/*_js/
+
+# Multiplier warm-up artefacts (toolchain check only; never referenced again)
+pipeline/circuits/build/multiplier_input.json
+pipeline/circuits/build/multiplier_proof.json
+pipeline/circuits/build/multiplier_public.json
+
+# Observer + benchmark raw output (regenerated per run)
+pipeline/observer/observer-log.jsonl
+pipeline/benchmark/runs/sweep.jsonl
+
+# Keep baseline.json — it's the measured single-worker distribution that
+# seeds synthesize.js, and it's tiny.
+!pipeline/benchmark/runs/baseline.json
+
+# OS junk
+.DS_Store
+Thumbs.db

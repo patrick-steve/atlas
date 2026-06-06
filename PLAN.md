@@ -1,0 +1,178 @@
+# PLAN.md — Distributed ZK Proof Generation Pipeline
+
+> **Purpose of this file:** A complete, autonomous build plan for Claude Code. Build the system in the phase order given. Each phase has a definition-of-done. Do not skip ahead — later phases assume earlier ones verify cleanly. When a phase says "STOP and verify," actually run the verification command and confirm output before continuing.
+
+---
+
+## 0. What we are building (read this fully before writing any code)
+
+A distributed pipeline that parallelizes **zero-knowledge proof generation** — the single-threaded CPU bottleneck in privacy-preserving blockchain apps — across a pool of worker nodes coordinated by Kafka.
+
+**The thesis:** ZK proving is expensive and CPU-bound; ZK verification is cheap. Therefore proof *generation* is the thing worth distributing. We prove this with real latency/throughput numbers at 1 vs N workers.
+
+**The concrete circuit:** a *private balance proof* — prove `balance >= amount` AND `Poseidon(balance, salt) == commitment`, revealing neither the balance nor the salt. Only `amount` and `commitment` are public.
+
+### Two-part system
+
+This project has a **local backend** (cannot run on Vercel — needs Kafka + long-lived CPU workers) and a **deployed showcase frontend** (Vercel).
+
+1. **Local pipeline** (`/pipeline`) — Docker Compose: Kafka + producer + N proof workers + results gateway. This is where real proving happens. Runs on the developer's machine.
+2. **Showcase site** (`/web`) — Next.js app deployed to Vercel. It (a) presents the research: architecture, the ZK explainer, the benchmark results as charts; and (b) runs a **live demo mode** that talks to the local gateway when it's running, and falls back to a **pre-recorded/simulated demo** using committed benchmark JSON when it isn't (so the deployed site always works).
+
+> **Critical deployment constraint:** Vercel runs serverless functions, not Kafka or persistent CPU workers. Do NOT attempt to run the proving pipeline on Vercel. The site must be fully functional on Vercel using committed result data, with live mode as a progressive enhancement when the local gateway URL is reachable.
+
+### Tech stack (pin these versions to avoid the known toolchain trap)
+
+- **circom 2.1.x** (compiler, installed via Rust/cargo) — NOT the old npm circom 0.x.
+- **snarkjs 0.7.x**
+- **circomlib** (for `Poseidon`, `GreaterEqThan`) — pin a version compatible with circom 2.1.x.
+- **Node 20.x**, **kafkajs 2.x**, **worker_threads** (built-in).
+- **Kafka** via Docker (use the `bitnami/kafka` KRaft image — no Zookeeper).
+- **Next.js 14 (App Router) + TypeScript**, **Recharts** for benchmark charts, deployed on **Vercel**.
+- **Python 3.11** only for the benchmark aggregation script (pandas) — optional, can be done in Node if preferred.
+
+---
+
+## Phase 1 — ZK circuit + prove/verify loop (single machine, no Kafka yet)
+
+**Goal:** a working command-line prove→verify loop for the balance circuit. This is the foundation; do not proceed until a proof verifies.
+
+### 1.1 Toolchain setup
+- Install Rust, build `circom` 2.1.x from source (`cargo build --release`), put binary on PATH.
+- `npm i -g snarkjs@0.7` (or local dev dep).
+- In `/pipeline/circuits`, `npm i circomlib`.
+- **STOP and verify:** `circom --version` prints 2.1.x.
+
+### 1.2 Warm-up circuit (sanity check the toolchain ONLY)
+- Write `multiplier.circom` (prove knowledge of two factors). Compile → R1CS + WASM. Run Powers of Tau (small, `2^12`) + Groth16 setup → `.zkey` + verification key. Generate witness, prove, verify.
+- **STOP and verify:** `snarkjs groth16 verify` prints `OK`. If the toolchain fights you here, fix it now — do not carry version issues into the real circuit.
+
+### 1.3 The real circuit — `balance_proof.circom`
+- Private inputs: `balance`, `salt`. Public inputs: `amount`, `commitment`.
+- Constraints:
+  - `commitment === Poseidon(2)([balance, salt])` using circomlib Poseidon.
+  - `balance >= amount` using circomlib `GreaterEqThan(n)` — choose `n` = 64 bits. Wire its output to `=== 1`.
+- Compile, run the Groth16 setup pipeline, export:
+  - proving key `balance_proof.zkey`
+  - verification key `verification_key.json`
+  - **Solidity verifier** `Verifier.sol` (`snarkjs zkey export solidityverifier`) — we won't deploy it, but it goes in the repo and the site references it as proof that on-chain verification is real and cheap.
+- Write a Node helper `prove.js` that, given `{balance, salt, amount}`, computes the commitment, builds the input, calls `snarkjs.groth16.fullProve`, returns `{proof, publicSignals, durationMs}`.
+- **STOP and verify:** a generated proof verifies against the vkey; an intentionally invalid one (balance < amount) fails to generate a satisfying witness. Record the single-proof `durationMs` — this is the baseline the whole project attacks.
+
+**Definition of done:** `node prove.js` prints a valid proof + its generation time, and verification returns true.
+
+---
+
+## Phase 2 — Kafka job queue + proof workers
+
+**Goal:** proofs generated by a pool of workers consuming from Kafka, not by direct function calls.
+
+### 2.1 Infrastructure
+- `/pipeline/docker-compose.yml`: one Kafka broker (KRaft mode, no Zookeeper), and a parameterizable number of `worker` service replicas.
+- Topics (create on startup via an init script): `proof-jobs` (partitions = 8, to allow worker scaling), `proof-results` (partitions = 4).
+
+### 2.2 Producer (`/pipeline/producer/index.js`)
+- CLI: `node index.js --count N --complexity {low|high}`.
+- For each job: generate random valid `{balance, salt, amount}`, compute commitment, emit message `{jobId, inputs, complexityClass, enqueuedAt}` to `proof-jobs`.
+- **Partition key = `complexityClass`** so heavy/light jobs distribute predictably. (Complexity class can vary the `GreaterEqThan` bit-width or batch multiple proofs per job — pick batch-count as the knob; document the choice.)
+
+### 2.3 Worker (`/pipeline/worker/index.js`) — the systems core
+- `kafkajs` consumer in group `proof-workers`, subscribed to `proof-jobs`.
+- **CRITICAL — do not block the event loop:** run `snarkjs.groth16.fullProve` inside a `worker_thread`, not on the main consumer thread. snarkjs proving pegs a CPU core; if it runs on the main thread it stalls Kafka heartbeats and triggers consumer-group rebalances. The main thread consumes, hands the job to a worker_thread, awaits, then commits the offset.
+- Set `sessionTimeout` and `heartbeatInterval` generously as a second layer of safety.
+- On completion, emit `{jobId, proof, publicSignals, workerId, durationMs, dequeuedAt, completedAt}` to `proof-results`.
+- Each worker process = WORKER_ID env var, processes one proof at a time (one core). Scaling = more replicas.
+- **STOP and verify:** with `docker compose up --scale worker=4`, fire 50 jobs from the producer; confirm all 4 workers pick up partitions (log it) and 50 results land on `proof-results`.
+
+### 2.4 Lag observer (`/pipeline/observer/index.js`)
+- Polls consumer-group lag for `proof-workers` (via kafkajs admin `fetchOffsets`/`fetchTopicOffsets`, computing lag = log-end-offset − committed-offset summed across partitions). Logs `{ts, lag, activeWorkers}` to `observer-log.jsonl` every 2s.
+- This is the **autoscaler signal**. For the 2-day build, scaling is manual (re-run with `--scale worker=N`); the observer proves the signal exists and is actionable. Document "autoscaler = phase 2" clearly.
+
+**Definition of done:** jobs flow producer → Kafka → worker pool → results topic; lag observer produces a clean time series; scaling worker count visibly changes drain rate.
+
+---
+
+## Phase 3 — Results gateway (bridge to the web)
+
+**Goal:** a single HTTP/WebSocket endpoint the frontend can talk to.
+
+- `/pipeline/gateway/index.js` — small Express + `ws` (or SSE) server:
+  - `POST /jobs` → enqueues a proof job (proxies to producer logic), returns `jobId`.
+  - WebSocket/SSE stream → consumes `proof-results`, pushes each result to connected clients in real time.
+  - `GET /health` → `{ok:true, activeWorkers}`.
+  - `GET /benchmarks` → serves the latest benchmark JSON (see Phase 4).
+- **CORS:** allow the Vercel domain. Gateway runs locally (e.g. `localhost:8080`), exposed to the deployed site via the user's own tunnel (ngrok/cloudflared) when they want live mode — document this, don't hardcode.
+
+**Definition of done:** `curl POST /jobs` enqueues; a WS client receives the result with `durationMs`.
+
+---
+
+## Phase 4 — Benchmarking (the research contribution)
+
+**Goal:** rigorous, reproducible numbers comparing throughput/latency across worker counts.
+
+- `/pipeline/benchmark/run.sh` orchestrates runs: for `workers in 1 2 4 8`, scale the pool, fire a fixed workload (e.g. 200 jobs), collect every result's `durationMs`, `enqueuedAt`, `completedAt`, plus the observer lag series.
+- `/pipeline/benchmark/aggregate.(py|js)` computes per-worker-count:
+  - **throughput** (proofs/sec, steady-state),
+  - **end-to-end latency** distribution (p50/p90/p99) — queue wait + proving,
+  - **pure proving time** distribution (isolate from queue wait),
+  - **speedup curve** vs ideal linear scaling (this is the money chart — shows where coordination overhead kicks in).
+- Output a single committed `web/public/data/benchmarks.json` consumed by the site. **This file is what makes the deployed site work without the local pipeline.**
+- Write `/pipeline/benchmark/METHODOLOGY.md`: hardware, circuit params, workload definition, what was held constant, sources of noise. This is the credibility layer; write it like a systems-paper methods section.
+
+**Definition of done:** `benchmarks.json` exists with real numbers; a speedup curve can be plotted from it; methodology is documented well enough to reproduce.
+
+---
+
+## Phase 5 — Showcase website (Next.js → Vercel)
+
+**Goal:** a single deployed site that explains the work, shows the benchmarks, and runs the demo. Must be fully functional on Vercel with NO backend, using committed `benchmarks.json` and simulated demo data; live mode is progressive enhancement.
+
+### Design direction (follow this, do not default to generic AI aesthetics)
+- **Aesthetic:** technical/instrument-panel — think oscilloscope + systems-monitoring dashboard, NOT a SaaS landing page. Dark, near-black background with a single sharp accent (signal-green or amber phosphor). Monospace display font for numbers/headers (e.g. a distinctive mono like **Berkeley Mono** alt → use **IBM Plex Mono** or **JetBrains Mono** as accessible substitute) paired with a clean grotesque for body. Grid lines, fine rules, tabular numerals. Latency counters should feel like live instrument readouts.
+- **No purple gradients, no Inter, no generic hero.** The memorable element: a live "proving" visualization where jobs flow through partitions into workers and proofs pop out, with a real-time latency readout.
+
+### Sections (single scroll or routed):
+1. **Hero / thesis** — one sentence: proving is the bottleneck, verifying is cheap, so we distribute proving. Live aggregate counter.
+2. **The ZK explainer** — interactive: walk through commitment → prove → verify for the balance circuit. Show what's private (balance, salt) vs public (amount, commitment). Plain-English, with the actual circuit constraints shown.
+3. **Architecture diagram** — producer → Kafka partitions → worker pool (worker_threads) → results, with the lag-observer/autoscaler signal called out. Animated flow.
+4. **Live demo** — input balance & amount → generate proof → show proof JSON, public signals, verification ✓, and **live latency**. Talks to gateway if `NEXT_PUBLIC_GATEWAY_URL` is set & `/health` responds; otherwise runs simulated mode driven by `benchmarks.json` distributions (clearly labeled "simulated" so it's honest).
+5. **Benchmarks** — Recharts: throughput vs workers, latency p50/p90/p99 bars, the speedup-vs-ideal curve. Pull from `benchmarks.json`. Short written interpretation of where coordination overhead appears.
+6. **The blockchain context** — short, credible: commitments, on-chain verifier (link the committed `Verifier.sol`), nullifiers as the missing piece, and zkRollups as the industrial-scale version of this exact bottleneck. Frame honestly: "this proves solvency; it is a building block, not a complete payment system."
+7. **Methodology & repro** — link `METHODOLOGY.md`, the repo, exact versions.
+
+### Implementation notes
+- App Router, TypeScript, server components for static content, client components for the demo/charts.
+- A `lib/demoSource.ts` abstraction: `live` (gateway WS) vs `simulated` (sample from benchmarks.json) behind one interface, so the UI doesn't care which is active.
+- NO secrets, NO env-dependent build failures — site must build & deploy green with zero env vars set.
+- Read `/mnt/skills/public/frontend-design/SKILL.md` guidance: commit fully to the instrument-panel aesthetic, distinctive type, real motion on the proving visualization.
+
+**Definition of done:** `next build` passes clean; `vercel deploy` produces a working public URL that shows benchmarks and runs the simulated demo with no backend; setting `NEXT_PUBLIC_GATEWAY_URL` to a tunneled local gateway switches the demo to live proofs.
+
+---
+
+## Phase 6 — Repo hygiene & docs
+
+- Root `README.md`: what it is, the thesis, architecture diagram, how to run the local pipeline, how the deployed site relates, headline benchmark result.
+- `/pipeline/README.md`: `docker compose up`, how to scale workers, how to run benchmarks.
+- Clear "Phase 2 / future work" section: real autoscaler (act on lag, not just observe), PLONK comparison (universal setup, different proving-time profile), nullifiers for real spend semantics, true XRPL/on-chain verifier deployment, Kubernetes HPA instead of Compose scaling.
+- `.env.example` for the web app (`NEXT_PUBLIC_GATEWAY_URL`).
+
+---
+
+## Build order summary (for autonomous execution)
+
+1. Phase 1 — get ONE proof to verify. Do not proceed otherwise.
+2. Phase 2 — distribute it over Kafka with worker_threads. Verify scaling changes drain rate.
+3. Phase 3 — gateway so the web can reach it.
+4. Phase 4 — run benchmarks, commit `benchmarks.json` + methodology.
+5. Phase 5 — build & deploy the showcase (must work standalone on Vercel).
+6. Phase 6 — docs.
+
+## Known traps (do not relearn these the hard way)
+
+- **circom version mismatch** is the #1 time sink. circom 2.1.x compiler (Rust) + snarkjs 0.7.x + a circomlib version that matches. Old tutorials use incompatible APIs. Lock versions first.
+- **Event-loop blocking** in the worker → use `worker_threads` for proving, or Kafka rebalances mid-proof and the demo looks broken.
+- **Trying to run Kafka/workers on Vercel** — impossible; the site must stand alone on committed data.
+- **Trusted setup confusion** — for dev, the Powers of Tau + Groth16 setup is mechanical; just run the standard command sequence, don't deep-dive the ceremony.
+- **GreaterEqThan bit-width** — proving time scales with `n`; keep it at 64 and note the relationship (it's relevant to the "partition by complexity" design and the benchmarks).

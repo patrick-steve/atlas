@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Inter Tight", system-ui, sans-serif;
+}
+
+html,
+body {
+  background: #05070A;
+  color: #B6BFCC;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11", "tnum"; /* tabular numerals globally */
+}
+
+/* Global background grid — like an oscilloscope graticule. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 64px 64px, 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle CRT scanline overlay. Reduce-motion users opt out. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.02) 3px,
+    transparent 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after { display: none; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Selection */
+::selection {
+  background: rgba(126, 231, 135, 0.35);
+  color: #B6F2BC;
+}
+
+/* Scrollbars — match the panel chrome. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #1A1F29;
+  border: 2px solid #05070A;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover { background: #252B37; }
+
+/* Tabular numerals utility for any element that displays changing digits. */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Tiny ruler under headers. */
+.rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(126, 231, 135, 0.5) 0%,
+    rgba(126, 231, 135, 0.15) 30%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+}
+
+/* Phosphor glow text utility */
+.phosphor {
+  color: #7EE787;
+  text-shadow: 0 0 8px rgba(126, 231, 135, 0.35), 0 0 1px rgba(126, 231, 135, 0.9);
+}
+
+.phosphor-amber {
+  color: #F2C055;
+  text-shadow: 0 0 8px rgba(242, 192, 85, 0.35), 0 0 1px rgba(242, 192, 85, 0.9);
+}
+
+/* Channel labels that look like equipment markings */
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #5E6675;
+}
+
+/* Section anchor scroll padding to clear sticky nav */
+section { scroll-margin-top: 80px; }
